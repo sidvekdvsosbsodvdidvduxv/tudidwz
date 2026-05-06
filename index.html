@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <title>痞颜端口 | 手游加速</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 30% 40%, #0a0f1e 0%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            padding: 16px;
+            position: relative;
+            touch-action: pan-x pan-y;
+        }
+
+        /* 动态星空 - 手机性能优化版 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: starFloat linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes starFloat {
+            0% {
+                transform: translateY(100vh) scale(0.3);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.9;
+            }
+            85% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* 光晕背景 - 手机性能优化 */
+        .glow-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 90vmax;
+            height: 90vmax;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(0, 255, 200, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
+            50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* 主容器 - 手机圆润卡片 */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 500px;
+            padding: 28px 20px 32px;
+            text-align: center;
+            background: rgba(10, 20, 35, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 255, 255, 0.2);
+            margin: auto;
+        }
+
+        /* 霓虹标题 - 手机字体自适应 */
+        .neon-title {
+            font-size: clamp(28px, 9vw, 48px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffaa, #00ccff, #ff44cc, #ffaa22);
+            background-size: 250% 250%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 3.5s ease infinite;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(0,255,200,0.3);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 日期时间 - 手机小字 */
+        .datetime {
+            font-size: 12px;
+            color: #88ffff;
+            opacity: 0.75;
+            font-family: monospace;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 状态卡片 - 手机触摸区域优化 */
+        .status-card {
+            background: rgba(0, 20, 45, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 16px 12px;
+            margin: 16px 0;
+            border: 1px solid rgba(0, 255, 200, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(0, 255, 200, 0.2);
+        }
+
+        .status-text {
+            font-size: clamp(16px, 5vw, 22px);
+            font-weight: 700;
+            color: #0ff;
+            text-shadow: 0 0 6px #0ff;
+            letter-spacing: 1px;
+        }
+
+        .status-sub {
+            font-size: 11px;
+            color: #aaffdd;
+            margin-top: 8px;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+        }
+
+        /* 闪烁效果 */
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; text-shadow: 0 0 6px #0ff; }
+            50% { opacity: 0.7; text-shadow: 0 0 12px #ff00aa; }
+        }
+
+        /* 大时钟 - 手机醒目 */
+        .clock {
+            font-size: clamp(36px, 14vw, 64px);
+            font-family: 'Orbitron', 'Courier New', monospace;
+            font-weight: 800;
+            color: #ff44cc;
+            text-shadow: 0 0 12px #ff44cc, 0 0 6px #ff0088;
+            margin: 12px 0 8px;
+            letter-spacing: 6px;
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 宣传语 - 手机可点击区域无碍 */
+        .slogan {
+            font-size: 14px;
+            color: #ccddff;
+            margin: 10px 0;
+            opacity: 0.9;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .slogan strong {
+            background: linear-gradient(135deg, #ffaa44, #ff8844);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        /* 作者签名 */
+        .signature {
+            margin-top: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ff66cc, #ffaa44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        /* 底部装饰线 */
+        .footer-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #0ff, #f0f);
+            margin: 20px auto 0;
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+
+        /* 触摸优化 - 去除移动端点击灰层 */
+        button, div, span, h1 {
+            cursor: default;
+            user-select: none;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars" id="starContainer"></div>
+<div class="glow-bg"></div>
+
+<div class="container">
+    <h1 class="neon-title">⚡痞颜端口⚡</h1>
+    
+    <div class="datetime" id="dateTimeDisplay">--年--月--日 周-- --:--</div>
+    
+    <div class="status-card">
+        <div class="status-text">✓ 服务器已连接</div>
+        <div class="status-text blink" style="font-size:clamp(14px,4vw,18px); margin-top:10px;">🚀 端口加速已开启 🚀</div>
+        <div class="status-sub">延迟 &lt; 8ms | 专属加速隧道</div>
+    </div>
+    
+    <div class="clock" id="liveClock">--:--:--</div>
+    
+    <div class="slogan">
+        <span>🎮</span> 祝你玩得愉快 · 把把赚千万 <span>💰</span>
+    </div>
+    <div class="slogan">
+        <span>⚡</span> 极致手游加速 · 0卡顿畅玩 <span>⚡</span>
+    </div>
+    
+    <div class="signature">—— 痞颜 · 专属加速 ——</div>
+    <div class="footer-line"></div>
+</div>
+
+<script>
+    (function() {
+        // ========== 手机版星空优化（数量减少，性能更好） ==========
+        function createStars() {
+            const starContainer = document.getElementById('starContainer');
+            if (!starContainer) return;
+            
+            // 根据屏幕尺寸动态调整星星数量（手机少一点，省电）
+            const isMobile = window.innerWidth <= 768;
+            const STAR_COUNT = isMobile ? 80 : 150;
+            
+            starContainer.innerHTML = '';
+            
+            for (let i = 0; i < STAR_COUNT; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = isMobile ? 1 + Math.random() * 1.5 : 1 + Math.random() * 2;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                const duration = 5 + Math.random() * 12;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${Math.random() * 8}s`;
+                star.style.opacity = 0.4 + Math.random() * 0.5;
+                starContainer.appendChild(star);
+            }
+        }
+
+        // ========== 实时时钟 + 手机友好日期 ==========
+        function updateTime() {
+            const now = new Date();
+            
+            // 时钟 HH:MM:SS
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.innerText = timeString;
+            
+            // 手机版简短短日期：2025年09月20日 周六 14:38
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            const weekday = weekdays[now.getDay()];
+            
+            const dateString = `${year}.${month}.${day} ${weekday} ${hours}:${minutes}`;
+            const dateEl = document.getElementById('dateTimeDisplay');
+            if (dateEl) dateEl.innerText = dateString;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // 生成星星（延迟确保DOM）
+        setTimeout(() => {
+            createStars();
+        }, 50);
+        
+        // 手机横竖屏切换时重新调整星星（保持整洁）
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                createStars();
+            }, 300);
+        });
+        
+        // 简单预加载样式（避免闪动）
+        document.body.style.opacity = '1';
+        
+        console.log('📱 痞颜端口 | 手游加速版已启动 | 手机完美适配');
+    })();
+</script>
+</body>
+</html>
